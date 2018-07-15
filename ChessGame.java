@@ -9,7 +9,7 @@ import java.util.Vector;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileOutputStream;
-/** 
+/**
 * The main class is used to enclose the entire chess game into one class
 * @author Shobhit
 * @version 1.0
@@ -20,7 +20,7 @@ public class ChessGame implements MouseListener{
 	JPanel pnlREF;
 	JLabel lblREF;
 	JList<String> lstREF;
-	
+
 	Color BLACK = Color.black, WHITE = Color.white;
 	//Chess variables
 		//Grid contains information about chesspieces
@@ -40,7 +40,7 @@ public class ChessGame implements MouseListener{
 		//Alphabet coordinate for the chess board
 	String[] ALPHA = {"a", "b", "c", "d", "e", "f", "g", "h"};
 		//Used to store the turn alphabet
-	char TURN = 'W';	
+	char TURN = 'W';
 		//Check If white or black has won
 	boolean GAME_OVER = false;
 		//Offset for drawing board on screen
@@ -50,7 +50,7 @@ public class ChessGame implements MouseListener{
 
 	ClientServerSocket SOCKET;
 
-	/** 
+	/**
 	* Constructor used to create an instance of a chess game
 	* @param pnl Reference to the JPanel used in clsGame
 	*/
@@ -92,12 +92,12 @@ public class ChessGame implements MouseListener{
 
 		//Initialize rule set
 		RULE_SET = new ChessRules(this);
-		
+
 		//Redraw chess board
 		update(pnlREF.getGraphics());
 	}
 
-	/** 
+	/**
 	* Function used to reset the canmove array when a new piece is selected
 	*/
 	public void resetCanMove(){
@@ -114,11 +114,11 @@ public class ChessGame implements MouseListener{
 		};
 	}
 
-	/** 
+	/**
 	* Function used to reset the board to its original state
 	*/
 	public void resetBoard(){
-		//Reset board 
+		//Reset board
 		GRID = new int[][]{
 			{110, 120, 130, 140, 150, 131, 121, 111},
 			{101, 102, 103, 104, 105, 106, 107, 108},
@@ -131,7 +131,7 @@ public class ChessGame implements MouseListener{
 		};
 	}
 
-	/** 
+	/**
 	* Function used to get the image of the chesspiece
 	* @param col Color of the piece
 	* @param type ChessPiece tpye (King, queen,pawn, etc)
@@ -140,11 +140,11 @@ public class ChessGame implements MouseListener{
 	public Image getImage(char col, char type){
 		//Piece name
 		String piece = col + "" + type ;
-		//Get image name 
+		//Get image name
 		return imgs.get(piece);
 	}
 
-	/** 
+	/**
 	* Get the color of a piece using its grid id
 	* @param ID ID on grid
 	* @return Color char 'W' or  'B'
@@ -154,7 +154,7 @@ public class ChessGame implements MouseListener{
 		return (ID >= 100) ? 'B' : 'W';
 	}
 
-	/** 
+	/**
 	* Get the type of a piece using its grid id
 	* @param ID ID on grid
 	* @return Type of the chess piece (P, R, K, etc.)
@@ -163,7 +163,7 @@ public class ChessGame implements MouseListener{
 		//Remove color hash
 		if(ID >= 100){ID -= 100;}
 
-		if(ID == 0){return '-';}		
+		if(ID == 0){return '-';}
 		switch(ID / 10){
 			case 0:
 				return 'P';
@@ -173,15 +173,15 @@ public class ChessGame implements MouseListener{
 
 			case 2:
 				return 'N';
-			
+
 			case 3:
 				return 'B';
-			
+
 			case 4:
 				return 'Q';
-			
+
 			case 5:
-				return 'K';									
+				return 'K';
 		}
 
 		return '-';
@@ -214,7 +214,7 @@ public class ChessGame implements MouseListener{
 
 		for(int i = 0;i < GRID.length; i++){
 			for(int j = 0;j < GRID[i].length; j++){
-				int row = (PRESPECT)? i: 7-i; 
+				int row = (PRESPECT)? i: 7 - i; 
 			//Pick color of square
 				//Alternate color of square
 				blockCol = (blnAlt) ? new Color(BLACK.getRed() , BLACK.getGreen(), BLACK.getBlue(), BLACK.getAlpha()) : new Color(WHITE.getRed(), WHITE.getGreen(), WHITE.getBlue());;
@@ -231,13 +231,13 @@ public class ChessGame implements MouseListener{
 				g.setColor(blockCol);
 				g.fill3DRect(j * SQUARE_SIZE + xOff, i * SQUARE_SIZE + yOff,
 					SQUARE_SIZE, SQUARE_SIZE, true);
-				g.draw3DRect(j * SQUARE_SIZE + xOff, i * SQUARE_SIZE + yOff, 
+				g.draw3DRect(j * SQUARE_SIZE + xOff, i * SQUARE_SIZE + yOff,
 					SQUARE_SIZE, SQUARE_SIZE, true);
 
 			//Draw chesspiece on square
 				if(GRID[i][j] != 0){
 					try{
-						g.drawImage(getImage(getColor(GRID[row][j]), getType(GRID[row][j])), j * SQUARE_SIZE + xOff, 
+						g.drawImage(getImage(getColor(GRID[row][j]), getType(GRID[row][j])), j * SQUARE_SIZE + xOff,
 							i * SQUARE_SIZE + yOff, SQUARE_SIZE, SQUARE_SIZE, null);
 					}catch(Exception e){
 						System.out.println("Couldnt draw image");
@@ -251,7 +251,7 @@ public class ChessGame implements MouseListener{
 	}
 
 
-	/** 
+	/**
 	* Simulate a 'move' in a chess game
 	* @param x Current x position
 	* @param y Current y position
@@ -264,20 +264,20 @@ public class ChessGame implements MouseListener{
 		//Move piece
 		int prev = GRID[dy][dx];
 
-		MOVE_LIST.addElement(ALPHA[x] + (8 - y) + Sp + ALPHA[dx] + (8 - dy) 
+		MOVE_LIST.addElement(ALPHA[x] + (8 - y) + Sp + ALPHA[dx] + (8 - dy)
 			+ Sp + getColor(GRID[dy][dx]) + getType(GRID[dy][dx]) + GRID[dy][dx] % 10);
 		lstREF.setListData(MOVE_LIST);
 
 		GRID[dy][dx] = GRID[y][x];
-		GRID[y][x] = 0;		
-		
+		GRID[y][x] = 0;
+
 		RULE_SET.isChecked();
 
 		//Reset movement vars
 		resetCanMove();
 		SELECTED[0] = -1;
 		SELECTED[1] = -1;
-		
+
 		TURN = (TURN == 'W') ? 'B' : 'W';
 		lblREF.setText((TURN == 'W') ? "WHITE PLAYS": "BLACK PLAYS");
 		if(getType(prev) == 'K'){
@@ -312,7 +312,7 @@ public class ChessGame implements MouseListener{
 		//Reset turn to white
 		TURN = 'W';
 		lblREF.setText((TURN == 'W') ? "WHITE PLAYS": "BLACK PLAYS");
-		
+
 		//Redraw board
 		update(pnlREF.getGraphics());
 	}
@@ -328,7 +328,7 @@ public class ChessGame implements MouseListener{
 		String Sp = "       ";
 		//Parse the log string
 		String[] parts = log.split(Sp);
-		
+
 		//Coordinate variables
 			//From
 		int x = (int)(parts[0].charAt(0)) - (int)('a');
@@ -336,7 +336,7 @@ public class ChessGame implements MouseListener{
 			//To
 		int dx = (int)(parts[1].charAt(0)) - (int)('a');
 		int dy = 8 - Integer.parseInt(parts[1].charAt(1) + "");
-		
+
 		//System.out.println(x + ", " + y);
 
 		//Move the piece back to its place before the move
@@ -359,7 +359,7 @@ public class ChessGame implements MouseListener{
 				break;
 			case 'K':
 				prev += 50;
-				break;				
+				break;
 		}
 		if(parts[2].charAt(0) == 'B'){prev += 100;}
 
@@ -421,7 +421,7 @@ public class ChessGame implements MouseListener{
 			JOptionPane.showMessageDialog(null, "Your game has been saved successfully", "Save Successful", JOptionPane.INFORMATION_MESSAGE);
 
 		}catch(Exception e){}
-		
+
 	}
 
 	/**
@@ -440,12 +440,12 @@ public class ChessGame implements MouseListener{
 		try{
 			//File reader
 			Scanner read = new Scanner(flGame);
-			
+
 			//Till EOF
 			while(read.hasNext()){
 				//Get stinf input
 				String part = read.next();
-				
+
 				//First part of line
 				if(type % 3 == 0){//Store positions
 					//From
@@ -453,7 +453,7 @@ public class ChessGame implements MouseListener{
 					y = 8 - Integer.parseInt(part.charAt(1) + "");
 				}
 				//Second part of line
-				else if(type % 3 == 1){//Replicate move 
+				else if(type % 3 == 1){//Replicate move
 					//To
 					dx = (int)(part.charAt(0)) - (int)('a');
 					dy = 8 - Integer.parseInt(part.charAt(1) + "");
@@ -464,7 +464,7 @@ public class ChessGame implements MouseListener{
 
 				//Increment type counter
 				type++;
-				
+
 				//System.out.println(read.next());
 
 			}
@@ -474,7 +474,7 @@ public class ChessGame implements MouseListener{
 		JOptionPane.showMessageDialog(null, "Your game has been loaded successfully", "Load Successful", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	/** 
+	/**
 	* Mouse click event manager
 	* @param event Mouse event
 	*/
@@ -496,7 +496,7 @@ public class ChessGame implements MouseListener{
 			SELECTED[1] = -1;
 			return;
 		}
-		
+
 		if(!PRESPECT){y = 7 - y;}
 		//Check can move
 		if(CANMOVE[y][x] == 1){// BLUE MOVABLE SQUARE
@@ -512,12 +512,12 @@ public class ChessGame implements MouseListener{
 			SELECTED[0] = x;
 			SELECTED[1] = y;
 			//Reset can move array
-			resetCanMove();	
+			resetCanMove();
 		}
-		
+
 		//System.out.println(x + ", " + y);
-		
-		//Calculate moves		
+
+		//Calculate moves
 		if(GRID[y][x] == 0){// NO CHESS PIECE SELECTED
 			//Unselect
 			SELECTED[0] = -1;
@@ -526,7 +526,7 @@ public class ChessGame implements MouseListener{
 			resetCanMove();
 		}else{// CHESS PIECE SELECTED
 			//Calcuate moves
-			RULE_SET.calcMoves(x, y);	
+			RULE_SET.calcMoves(x, y);
 		}
 
 		//ReDraw Board
@@ -534,22 +534,22 @@ public class ChessGame implements MouseListener{
 	}
 
 	public void mouseReleased(MouseEvent event){
-		
+
 	}
 
 	public void mouseClicked(MouseEvent event){
-		
+
 	}
 
 	public void mouseEntered(MouseEvent event){
-		
+
 	}
 
 	public void mouseExited(MouseEvent event){
-		
+
 	}
 
-	/** 
+	/**
 	* Draw things on the screen using double buffering
 	* @param g
 	*/
@@ -557,12 +557,12 @@ public class ChessGame implements MouseListener{
 		//Double buffering
 		Image dbImage = pnlREF.createImage(pnlREF.getWidth(), pnlREF.getHeight());
 		Graphics dbg = dbImage.getGraphics();
-		
+
 		//What to draw
-		//dbg.drawString("Linux draws just fine", 200, 200);	
+		//dbg.drawString("Linux draws just fine", 200, 200);
 		drawBoard(dbg, xOff, yOff);
-		
-		
+
+
 		//Opacity and Delay
 		int op = 10, del = 5;
 
@@ -570,7 +570,7 @@ public class ChessGame implements MouseListener{
 		for(int i = 0; i < 50; i++){
 			//Change opacity after delay
 			if(i % del == 0){op += 10;}
-			//Set the color 
+			//Set the color
 			dbg.setColor(new Color(BLACK.darker().darker().getRed(), BLACK.darker().darker().getGreen(), BLACK.darker().darker().getBlue(), 255 - op));
 			//Draw Board Borders
 				//Left
@@ -603,7 +603,7 @@ public class ChessGame implements MouseListener{
 		}
 		//Double buffering
 		g.drawImage(dbImage, 0, 0, pnlREF);
-		
+
 	}
 
 

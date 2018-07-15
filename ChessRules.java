@@ -1,5 +1,5 @@
 import java.util.Vector;
-/** 
+/**
 * Used to calculate the possible moves for chess pieces and see if a king is checked
 * @author Shobhit
 * @version 1.0
@@ -26,7 +26,7 @@ public class ChessRules{
 		cgREF = cg;
 		WHITE_CHECK = false;
 		BLACK_CHECK = false;
-		MODE = 0;	
+		MODE = 0;
 	}
 
 	/**
@@ -36,11 +36,11 @@ public class ChessRules{
 	*/
 	public void calcMoves(int i, int j){
 		//System.out.println(cgREF.GRID[j][i]);
-		
+
 		//Get piece type and color
 		TYPE = cgREF.getType(cgREF.GRID[j][i]);
 		COLOR = cgREF.getColor(cgREF.GRID[j][i]);
-		
+
 		//Calculate moves based on chess piece type
 		switch(TYPE){
 			case 'P':// PAWN
@@ -67,7 +67,7 @@ public class ChessRules{
 			case 'K':// KING
 				KingRules(i, j);
 				break;
-					
+
 		}
 	}
 
@@ -88,7 +88,7 @@ public class ChessRules{
 				if(cgREF.getColor(cgREF.GRID[j][i]) == 'W'){WHITE_CHECK = true;}
 				//BLACK CHECK
 				if(cgREF.getColor(cgREF.GRID[j][i]) == 'B'){BLACK_CHECK = true;}
-			}		
+			}
 		}
 	}
 
@@ -102,7 +102,7 @@ public class ChessRules{
 		//Invalid block number
 		if(i < 0 || i >= 8){return false;}
 		if(j < 0 || j >= 8){return false;}
-		
+
 		//Check if unoccupied
 		return (cgREF.GRID[j][i] == 0);
 	}
@@ -153,7 +153,7 @@ public class ChessRules{
 	* @param j Y Block number
 	*/
 	public void KingRules(int i, int j){
-		
+
 		if(isEmpty(i + 1, j) || isEnemy(i + 1, j)){ //RIGHT
 			markFlag(i + 1, j);
 		}
@@ -167,16 +167,16 @@ public class ChessRules{
 			markFlag(i, j - 1);
 		}
 		if(isEmpty(i + 1, j + 1) || isEnemy(i + 1, j + 1)){ //BELOW-RIGHT
-			markFlag(i + 1, j + 1);	
+			markFlag(i + 1, j + 1);
 		}
 		if(isEmpty(i + 1, j - 1) || isEnemy(i + 1, j - 1)){ //ABOVE-RIGHT
-			markFlag(i + 1, j - 1);			
+			markFlag(i + 1, j - 1);
 		}
 		if(isEmpty(i - 1, j + 1) || isEnemy(i - 1, j + 1)){ //BELOW-LEFT
-			markFlag(i - 1, j + 1);		
+			markFlag(i - 1, j + 1);
 		}
 		if(isEmpty(i - 1, j - 1) || isEnemy(i - 1, j - 1)){ //ABOVE-LEFT
-			markFlag(i - 1, j - 1);			
+			markFlag(i - 1, j - 1);
 		}
 	}
 
@@ -187,7 +187,7 @@ public class ChessRules{
 	* @param dir which direction to traverse
 	*/
 	public void LineRules(int i, int j, double dir){
-		
+
 		if(dir == 0){//At the first iteration
 			//Go over every direction
 				//TOP
@@ -201,7 +201,7 @@ public class ChessRules{
 		}else{//Not first iteration
 
 			if(isEmpty(i, j) || isEnemy(i, j)){//If the square is unoccupied or occupied by enemy
-				//Set can move to true 
+				//Set can move to true
 				markFlag(i, j);
 			}
 			if(isEmpty(i, j)){// If can still progress in a direction
@@ -213,11 +213,11 @@ public class ChessRules{
 					//LEFT
 				if(dir == -0.5){LineRules(i - 1, j, -0.5);}
 					//RIGHT
-				if(dir == 0.5){LineRules(i + 1, j, 0.5);}	
+				if(dir == 0.5){LineRules(i + 1, j, 0.5);}
 			}
-		}		
+		}
 	}
-	
+
 	/**
 	* Set of rules used to calculate the possible moves for a piece which can move diagonally
 	* @param i X Block number
@@ -225,7 +225,7 @@ public class ChessRules{
 	* @param dir which direction to traverse
 	*/
 	public void DiagonalRules(int i, int j, double dir){
-		
+
 		if(dir == 0){//At the first iteration
 			//Go over every direction
 				//TOP-LEFT
@@ -251,7 +251,7 @@ public class ChessRules{
 					//BOT-LEFT
 				if(dir == -0.5){DiagonalRules(i - 1, j + 1, -0.5);}
 					//TOP-RIGHT
-				if(dir == 0.5){DiagonalRules(i + 1, j - 1, 0.5);}	
+				if(dir == 0.5){DiagonalRules(i + 1, j - 1, 0.5);}
 			}
 		}
 	}
@@ -272,7 +272,7 @@ public class ChessRules{
 			if(k == 0){x = 1; y = 2;}
 				//1 vetrical and 2 horizontal
 			if(k == 1){x = 2; y = 1;}
-			//Check for all 4 possible moves for particular orientation 
+			//Check for all 4 possible moves for particular orientation
 			for(int l = 0; l < 4; l++){
 				//If the square is unoccupied or occupied by an enemy
 				if(isEmpty(i + x, j + y) || isEnemy(i + x, j + y)){
@@ -284,7 +284,7 @@ public class ChessRules{
 				if(l % 2 == 1){y = -y;}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class ChessRules{
 	* @param j Y Block number
 	*/
 	public void PawnRules(int i, int j){
-		//check = true;	
+		//check = true;
 		switch(COLOR){
 
 			case 'W'://WHITE PAWN
@@ -304,7 +304,7 @@ public class ChessRules{
 
 				//Kill enemy on right
 				if(isEnemy(i + 1,j - 1)){
-					markFlag(i + 1, j - 1);	
+					markFlag(i + 1, j - 1);
 				}
 
 				//Kill enemy on left
@@ -315,6 +315,11 @@ public class ChessRules{
 				//First move can move two steps
 				if(j == 6 && isEmpty(i, j - 2)){
 					cgREF.CANMOVE[j - 2][i] = 1;
+				}
+
+				if(j == 0){
+					cgREF.GRID[j][i] = 41;
+					calcMoves(i, j);
 				}
 				break;
 
@@ -338,7 +343,13 @@ public class ChessRules{
 				if(j == 1 && isEmpty(i, j + 2)){
 					cgREF.CANMOVE[j + 2][i] = 1;
 				}
-				break;	
+
+				if(j == 7){
+					cgREF.GRID[j][i] = 141;
+					calcMoves(i, j);
+				}
+
+				break;
 		}
 	}
 }

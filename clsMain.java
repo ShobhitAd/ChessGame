@@ -11,7 +11,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.event.*;
-/** 
+/**
 * The class with the main menu giving access to the different game modes
 * @author Shobhit
 * @version 1.0
@@ -21,8 +21,8 @@ public class clsMain extends JFrame implements ActionListener{
 	//GUI variables
 	JPanel pnlTOP = new JPanel(), pnlCENTER = new JPanel(new FlowLayout()), pnlLEFT = new JPanel()
 		, pnlRIGHT = new JPanel(), pnlBOT = new JPanel();
-	JLabel lblTITLE = new JLabel("CHESS"); 
-	JButton btnPVP = new JButton("Player VS Player"), btnPVC = new JButton("Player VS Computer"), 
+	JLabel lblTITLE = new JLabel("CHESS");
+	JButton btnPVP = new JButton("Player VS Player"), btnPVC = new JButton("Player VS Computer"),
 		btnOn = new JButton("Online"), btnExit =  new JButton("Quit");
 
 	/**
@@ -32,7 +32,7 @@ public class clsMain extends JFrame implements ActionListener{
 	*/
 	public clsMain(int W ,int H){
 		//Set window size and postion
-		setBounds(this.getToolkit().getScreenSize().width / 2 - W / 2, 
+		setBounds(this.getToolkit().getScreenSize().width / 2 - W / 2,
 			this.getToolkit().getScreenSize().height / 2 - H / 2, W, H);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Remove border
@@ -42,7 +42,7 @@ public class clsMain extends JFrame implements ActionListener{
 		this.setLayout(new BorderLayout());
 		//TOP
 		this.add(pnlTOP, BorderLayout.NORTH);
-			//Title		
+			//Title
 		pnlTOP.add(lblTITLE);
 		pnlTOP.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 		lblTITLE.setFont(new Font("Ubuntu", Font.BOLD, 60));
@@ -51,16 +51,18 @@ public class clsMain extends JFrame implements ActionListener{
 		pnlCENTER.setLayout(new GridLayout(4,1));
 			//Player Vs Player
 		pnlCENTER.add(btnPVP);
-		btnPVP.setFont(new Font("Ubuntu", Font.PLAIN, 20));		
+		btnPVP.setFont(new Font("Ubuntu", Font.PLAIN, 20));
 		btnPVP.addActionListener(this);
 			//Player Vs Computer
 		pnlCENTER.add(btnPVC);
 		btnPVC.setFont(new Font("Ubuntu", Font.PLAIN, 20));
 		btnPVC.addActionListener(this);
+		btnPVC.setEnabled(false);
 			//Online
 		pnlCENTER.add(btnOn);
 		btnOn.setFont(new Font("Ubuntu", Font.PLAIN, 20));
 		btnOn.addActionListener(this);
+		btnOn.setEnabled(false);
 			//Quit the game
 		pnlCENTER.add(btnExit);
 		btnExit.setFont(new Font("Ubuntu", Font.PLAIN, 20));
@@ -87,7 +89,7 @@ public class clsMain extends JFrame implements ActionListener{
 			//Start game normally
 			setVisible(false);
 			clsGame ABC = new clsGame(790, 730, null);
-			
+
 		}
 		//Player vs Computer
 		else if(event.getSource() == btnPVC){
